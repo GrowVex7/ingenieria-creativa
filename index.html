@@ -582,47 +582,6 @@ footer { background:#050d1a; padding:2.5rem 2rem; text-align:center; border-top:
 </footer>
 
 <script>
-emailjs.init('9nsGv3MaKuT35yIxV');
-
-function enviarFormulario() {
-  var btn  = document.getElementById('formBtn');
-  var msg  = document.getElementById('formMsg');
-  var nombre   = document.getElementById('f_nombre').value.trim();
-  var email    = document.getElementById('f_email').value.trim();
-  var telefono = document.getElementById('f_telefono').value.trim();
-  var servicio = document.getElementById('f_servicio').value;
-  var mensaje  = document.getElementById('f_mensaje').value.trim();
-  if (!nombre || !email) {
-    msg.className = 'form-msg error';
-    msg.textContent = 'Por favor llena nombre y correo.';
-    return;
-  }
-  btn.disabled = true;
-  btn.textContent = 'Enviando...';
-  msg.className = 'form-msg';
-  emailjs.send('service_xm4zh7w', 'template_p68806r', {
-    from_name: nombre,
-    from_email: email,
-    telefono:  telefono || 'No proporcionado',
-    servicio:  servicio || 'No especificado',
-    mensaje:   mensaje  || 'Sin mensaje',
-  }).then(function() {
-    msg.className = 'form-msg success';
-    msg.textContent = '¡Mensaje enviado! Te respondemos en menos de 24 horas.';
-    btn.textContent = 'Enviado';
-    document.getElementById('f_nombre').value = '';
-    document.getElementById('f_email').value  = '';
-    document.getElementById('f_telefono').value = '';
-    document.getElementById('f_servicio').value = '';
-    document.getElementById('f_mensaje').value  = '';
-  }, function() {
-    msg.className = 'form-msg error';
-    msg.textContent = 'Error al enviar. Escríbenos directo por WhatsApp.';
-    btn.disabled = false;
-    btn.textContent = 'Enviar mensaje';
-  });
-}
-
 var angles = [0,-90,-180,-270];
 var face = 0;
 function rotateCube(dir) { face=(face+dir+4)%4; updateCube(); }
@@ -739,6 +698,45 @@ document.addEventListener('click', function(e) {
   }
 });
 loadTrack(0);
+// ==================== FUNCIÓN WHATSAPP ====================
+function enviarPorWhatsApp() {
+  const nombre = document.getElementById('f_nombre').value.trim();
+  const telefono = document.getElementById('f_telefono').value.trim();
+  const email = document.getElementById('f_email').value.trim();
+  const servicio = document.getElementById('f_servicio').value;
+  const mensaje = document.getElementById('f_mensaje').value.trim();
+
+  if (!nombre || !email) {
+    const msg = document.getElementById('formMsg');
+    msg.className = 'form-msg error';
+    msg.textContent = 'Por favor llena nombre y correo electrónico.';
+    msg.style.display = 'block';
+    return;
+  }
+
+  const texto = `*Nuevo lead - Ingeniería Creativa*%0A%0A` +
+                `*Nombre:* ${nombre}%0A` +
+                `*WhatsApp / Teléfono:* ${telefono || 'No proporcionado'}%0A` +
+                `*Correo:* ${email}%0A` +
+                `*Servicio:* ${servicio || 'No especificado'}%0A` +
+                `*Mensaje:* ${mensaje || 'Sin mensaje adicional'}`;
+
+  const numero = "529221957322";
+
+  window.open(`https://wa.me/${numero}?text=${texto}`, '_blank');
+
+  const msg = document.getElementById('formMsg');
+  msg.className = 'form-msg success';
+  msg.textContent = '¡Abriendo WhatsApp! Revisa y envía el mensaje.';
+  msg.style.display = 'block';
+
+  // Limpiar formulario
+  document.getElementById('f_nombre').value = '';
+  document.getElementById('f_email').value = '';
+  document.getElementById('f_telefono').value = '';
+  document.getElementById('f_servicio').value = '';
+  document.getElementById('f_mensaje').value = '';
+}
 </script>
 
 </body>
