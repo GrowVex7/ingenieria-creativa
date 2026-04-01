@@ -277,7 +277,7 @@ footer { background:#050d1a; padding:2.5rem 2rem; text-align:center; border-top:
 <!-- NAV -->
 <nav>
   <a href="#" class="nav-logo">
-    <img src="logo.png" alt="Ingeniería Creativa">
+    <img src="Logo.png" alt="Ingeniería Creativa">
     <span class="nav-brand">Ingeniería Creativa</span>
   </a>
   <ul class="nav-links">
@@ -306,7 +306,7 @@ footer { background:#050d1a; padding:2.5rem 2rem; text-align:center; border-top:
     </div>
     <div class="hero-visual">
       <div class="hero-banner" id="heroBanner">
-        <img src="banner.png" alt="Banner Ingeniería Creativa">
+        <img src="Banner.png" alt="Banner Ingeniería Creativa">
         <div class="hero-fade"></div>
       </div>
     </div>
@@ -360,7 +360,7 @@ footer { background:#050d1a; padding:2.5rem 2rem; text-align:center; border-top:
     <div class="why-grid">
       <div class="why-logo-wrap">
         <div class="logo-ring">
-          <img src="logo.png" alt="Ingeniería Creativa">
+          <img src="Logo.png" alt="Ingeniería Creativa">
         </div>
       </div>
       <div>
@@ -573,7 +573,7 @@ footer { background:#050d1a; padding:2.5rem 2rem; text-align:center; border-top:
 <!-- FOOTER -->
 <footer>
   <div class="ft-logo">
-    <img src="logo.png" alt="Logo">
+    <img src="Logo.png" alt="Logo">
     <span class="ft-brand">Ingeniería Creativa</span>
   </div>
   <div class="ft-line"></div>
@@ -582,28 +582,24 @@ footer { background:#050d1a; padding:2.5rem 2rem; text-align:center; border-top:
 </footer>
 
 <script>
-// ── EMAILJS ───────────────────────────────────────
 emailjs.init('9nsGv3MaKuT35yIxV');
 
 function enviarFormulario() {
-  const btn  = document.getElementById('formBtn');
-  const msg  = document.getElementById('formMsg');
-  const nombre   = document.getElementById('f_nombre').value.trim();
-  const email    = document.getElementById('f_email').value.trim();
-  const telefono = document.getElementById('f_telefono').value.trim();
-  const servicio = document.getElementById('f_servicio').value;
-  const mensaje  = document.getElementById('f_mensaje').value.trim();
-
+  var btn  = document.getElementById('formBtn');
+  var msg  = document.getElementById('formMsg');
+  var nombre   = document.getElementById('f_nombre').value.trim();
+  var email    = document.getElementById('f_email').value.trim();
+  var telefono = document.getElementById('f_telefono').value.trim();
+  var servicio = document.getElementById('f_servicio').value;
+  var mensaje  = document.getElementById('f_mensaje').value.trim();
   if (!nombre || !email) {
     msg.className = 'form-msg error';
     msg.textContent = 'Por favor llena nombre y correo.';
     return;
   }
-
   btn.disabled = true;
   btn.textContent = 'Enviando...';
   msg.className = 'form-msg';
-
   emailjs.send('service_xm4zh7w', 'template_p68806r', {
     from_name: nombre,
     from_email: email,
@@ -627,9 +623,8 @@ function enviarFormulario() {
   });
 }
 
-// ── CUBO 3D ──────────────────────────────────────
-const angles = [0,-90,-180,-270];
-let face = 0;
+var angles = [0,-90,-180,-270];
+var face = 0;
 function rotateCube(dir) { face=(face+dir+4)%4; updateCube(); }
 function goFace(n) { face=n; updateCube(); }
 function updateCube() {
@@ -638,19 +633,17 @@ function updateCube() {
   document.querySelectorAll('.proc-face').forEach(function(f,i){ f.classList.toggle('active-face',i===face); });
 }
 
-// ── LLUVIA DE DINERO ─────────────────────────────
 document.getElementById('heroBanner').addEventListener('click', function(e) {
   var items = ['$','$','$','¢'];
   for (var i=0; i<22; i++) {
     var el = document.createElement('span');
     el.textContent = items[Math.floor(Math.random()*items.length)];
-    el.style.cssText = 'position:fixed;left:'+( e.clientX+(Math.random()-.5)*160)+'px;top:'+e.clientY+'px;font-size:'+(1.4+Math.random()*1.8)+'rem;font-weight:900;color:#2ecc71;pointer-events:none;z-index:9999;animation:moneyFall '+(0.9+Math.random()*.6)+'s ease-out forwards;';
+    el.style.cssText = 'position:fixed;left:'+(e.clientX+(Math.random()-.5)*160)+'px;top:'+e.clientY+'px;font-size:'+(1.4+Math.random()*1.8)+'rem;font-weight:900;color:#2ecc71;pointer-events:none;z-index:9999;animation:moneyFall '+(0.9+Math.random()*.6)+'s ease-out forwards;';
     document.body.appendChild(el);
     setTimeout(function(){ el.remove(); }, 1500);
   }
 });
 
-// ── REPRODUCTOR ───────────────────────────────────
 var tracks = [
   { name:'Track 1', file:'musica1.mp3' },
   { name:'Track 2', file:'musica2.mp3' },
@@ -658,7 +651,6 @@ var tracks = [
   { name:'Track 4', file:'musica4.mp3' },
   { name:'Track 5', file:'musica5.mp3' },
 ];
-
 var audio         = document.getElementById('bgMusic');
 var playerBtn     = document.getElementById('playerBtn');
 var playerPanel   = document.getElementById('playerPanel');
@@ -670,7 +662,6 @@ var currentTimeEl = document.getElementById('currentTime');
 var totalTimeEl   = document.getElementById('totalTime');
 var volSlider     = document.getElementById('volSlider');
 var playlistEl    = document.getElementById('playlist');
-
 var currentTrack = 0;
 var isPlaying    = false;
 var panelOpen    = false;
@@ -681,7 +672,6 @@ function fmt(s) {
   var sec = String(Math.floor(s % 60)).padStart(2, '0');
   return m + ':' + sec;
 }
-
 function loadTrack(i) {
   currentTrack = i;
   audio.src = tracks[i].file;
@@ -689,7 +679,6 @@ function loadTrack(i) {
   trackNameEl.textContent = tracks[i].name;
   updatePlaylist();
 }
-
 function updatePlaylist() {
   playlistEl.innerHTML = '';
   tracks.forEach(function(t, i) {
@@ -700,7 +689,6 @@ function updatePlaylist() {
     playlistEl.appendChild(item);
   });
 }
-
 function playTrack() {
   audio.play().then(function() {
     isPlaying = true;
@@ -708,64 +696,48 @@ function playTrack() {
     playIcon.innerHTML = '<rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/>';
   }).catch(function() {});
 }
-
 function togglePlay() {
   if (isPlaying) {
     audio.pause();
     isPlaying = false;
     playerBtn.classList.remove('playing');
     playIcon.innerHTML = '<polygon points="5 3 19 12 5 21 5 3"/>';
-  } else {
-    playTrack();
-  }
+  } else { playTrack(); }
 }
-
 function nextTrack() { loadTrack((currentTrack+1) % tracks.length); if(isPlaying) playTrack(); }
 function prevTrack() { loadTrack((currentTrack-1+tracks.length) % tracks.length); if(isPlaying) playTrack(); }
-
 function toggleMute() {
   muted = !muted;
   audio.muted = muted;
   document.getElementById('volIcon').style.opacity = muted ? 0.3 : 1;
 }
-
 audio.addEventListener('timeupdate', function() {
   if (!audio.duration) return;
   progressBar.style.width = ((audio.currentTime / audio.duration) * 100) + '%';
   currentTimeEl.textContent = fmt(audio.currentTime);
   totalTimeEl.textContent   = fmt(audio.duration);
 });
-
 audio.addEventListener('ended', function() { nextTrack(); });
-
 progressWrap.addEventListener('click', function(e) {
   var r = progressWrap.getBoundingClientRect();
   audio.currentTime = ((e.clientX - r.left) / r.width) * audio.duration;
 });
-
 volSlider.addEventListener('input', function() {
   audio.volume = parseFloat(volSlider.value);
-  muted = false;
-  audio.muted = false;
+  muted = false; audio.muted = false;
 });
-
 playerBtn.addEventListener('click', function(e) {
   e.stopPropagation();
   panelOpen = !panelOpen;
   playerPanel.classList.toggle('open', panelOpen);
-  if (!isPlaying && panelOpen) {
-    loadTrack(0);
-    playTrack();
-  }
+  if (!isPlaying && panelOpen) { loadTrack(0); playTrack(); }
 });
-
 document.addEventListener('click', function(e) {
   if (panelOpen && !playerPanel.contains(e.target) && e.target !== playerBtn) {
     panelOpen = false;
     playerPanel.classList.remove('open');
   }
 });
-
 loadTrack(0);
 </script>
 
