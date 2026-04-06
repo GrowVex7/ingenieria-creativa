@@ -1901,7 +1901,7 @@
     <div class="sec">
       <div class="sec-tag">Ofertas activas</div>
       <h2 class="sec-title">Nuestras <span>Promociones</span></h2>
-      <p class="sec-sub">ADescuentos exclusivos por tiempo limitado. Dale a tu negocio el impulso que merece.</p>
+      <p class="sec-sub">Aprovecha estas ofertas por tiempo limitado y dale a tu negocio el impulso que merece.</p>
       <div class="promos-grid" id="promosGrid">
         <!-- Las promos se renderizan por JS desde localStorage / datos por defecto -->
       </div>
@@ -1916,15 +1916,7 @@
       <p class="sec-sub">Trabajo real para clientes reales. Así es como transformamos ideas en resultados.</p>
 
       <div class="refs-grid" id="refsGrid"></div>
-      <div>
-        <div class="ref-lp-tag">Landing Page</div>
-        <h3>Boutique Magy Rivera</h3>
-        <p>Landing page completa diseñada y desarrollada para tienda de moda femenina. Diseño responsive con catálogo
-          visual y sección de contacto.</p>
-      </div>
-      <a href="https://growvex7.github.io/BOUTIQUE-MAGY-RIVERA/" target="_blank" class="btn-green">Ver sitio en vivo
-        →</a>
-    </div>
+      <div id="refsLinks"></div>
     </div>
   </section>
 
@@ -2124,15 +2116,35 @@
         portSnap.forEach(d => portItems.push({ id: d.id, ...d.data() }));
         portItems.sort((a, b) => b.fecha - a.fecha);
         const grid = document.getElementById('refsGrid');
+        const linksContainer = document.getElementById('refsLinks');
         if (grid) {
           const media = portItems.filter(i => i.tipo === 'imagen' || i.tipo === 'video');
           if (!media.length) {
-            grid.innerHTML = '<p style="color:var(--muted);grid-column:1/-1;text-align:center;padding:2rem 0;font-size:.9rem;">No hay imágenes en el portafolio en este momento.</p>';
+            grid.innerHTML = '';
           } else {
             grid.innerHTML = media.map((item, i) => {
               if (item.tipo === 'video') return `<div class="ref-img"><video src="${item.url}" muted loop playsinline style="width:100%;height:100%;object-fit:cover;" onmouseenter="this.play()" onmouseleave="this.pause()"></video></div>`;
               return `<div class="ref-img"><img src="${item.url}" alt="Referencia ${i + 1}" loading="lazy"></div>`;
             }).join('');
+          }
+        }
+        // Landings y sitios web
+        if (linksContainer) {
+          const links = portItems.filter(i => i.tipo === 'landing' || i.tipo === 'sitio');
+          if (links.length) {
+            linksContainer.innerHTML = links.map(item => {
+              const tag = item.tipo === 'landing' ? 'Landing Page' : 'Sitio Web';
+              return `<div class="ref-lp">
+            <div>
+              <div class="ref-lp-tag">${tag}</div>
+              <h3>${item.nombre}</h3>
+              <p>${item.desc || ''}</p>
+            </div>
+            <a href="${item.url}" target="_blank" class="btn-green">Ver sitio en vivo →</a>
+          </div>`;
+            }).join('');
+          } else {
+            linksContainer.innerHTML = '';
           }
         }
 
@@ -2151,39 +2163,14 @@
     })();
 
     // ── PROMOCIONES ──────────────────────────────────
-    var DEFAULT_PROMOS = [
-      {
-        id: 'p1',
-        label: '🔥 Oferta de lanzamiento',
-        title: '25% DE DESCUENTO',
-        titleSpan: 'EN TU PRIMER PROYECTO',
-        desc: 'Diseño de flyers, landing page, video o sitio web con 25% off. Solo para nuevos clientes. ¡No dejes pasar esta oportunidad!',
-        cta: 'Cotizar ahora',
-        ctaHref: '#contacto',
-        deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-        gold: false,
-        active: true
-      },
-      {
-        id: 'p2',
-        label: '⭐ Paquete especial',
-        title: 'PAQUETE PRESENCIA',
-        titleSpan: 'DIGITAL COMPLETA',
-        desc: 'Landing page + 5 flyers + video de 30 segundos. Todo en un solo paquete con precio especial por tiempo limitado.',
-        cta: 'Ver paquete',
-        ctaHref: '#contacto',
-        deadline: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
-        gold: true,
-        active: true
-      }
-    ];
+    var DEFAULT_PROMOS = [];
 
     function getPromos() {
-      if (window._firebasePromos && window._firebasePromos.length) return window._firebasePromos;
+      if (window._firebasePromos) return window._firebasePromos;
       try {
         var saved = localStorage.getItem('ic_promos');
-        return saved ? JSON.parse(saved) : DEFAULT_PROMOS;
-      } catch (e) { return DEFAULT_PROMOS; }
+        return saved ? JSON.parse(saved) : [];
+      } catch (e) { return []; }
     }
 
     function renderPromos() {
@@ -2191,7 +2178,7 @@
       if (!grid) return;
       var promos = getPromos().filter(function (p) { return p.active; });
       if (promos.length === 0) {
-        grid.innerHTML = '<p style="color:var(--muted);text-align:center;padding:2rem;">No hay promociones activas en este momento. ¡Vuelve pronto!</p>';
+        grid.innerHTML = '<p style="color:var(--muted);text-align:center;padding:2rem;">No hay promociones activas en este momento.</p>';
         return;
       }
       grid.innerHTML = promos.map(function (p) {
@@ -2372,6 +2359,7 @@
         loadTrack(0);
         updatePlaylist();
       </script>
+    
     </body>
     
     </html>
