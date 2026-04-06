@@ -1,0 +1,1509 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin — Ingeniería Creativa</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --navy: #0a1628;
+            --navy2: #0f1f3d;
+            --navy3: #152848;
+            --green: #2ecc71;
+            --green2: #27ae60;
+            --gold: #c9a84c;
+            --white: #f0f4f8;
+            --muted: #8ba3c4;
+            --card: rgba(15, 31, 61, 0.9);
+            --red: #e74c3c;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--navy);
+            color: var(--white);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* LOGIN */
+        #loginScreen {
+            position: fixed;
+            inset: 0;
+            background: var(--navy);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+        }
+
+        .login-box {
+            background: var(--card);
+            border: 1px solid rgba(46, 204, 113, .2);
+            border-radius: 16px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 380px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, .5);
+        }
+
+        .login-logo {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            border: 2px solid var(--green);
+            object-fit: cover;
+            margin: 0 auto 1rem;
+            display: block;
+        }
+
+        .login-brand {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.6rem;
+            letter-spacing: 3px;
+            margin-bottom: .3rem;
+        }
+
+        .login-sub {
+            color: var(--muted);
+            font-size: .82rem;
+            margin-bottom: 2rem;
+        }
+
+        .login-field {
+            display: flex;
+            flex-direction: column;
+            gap: .4rem;
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+
+        .login-field label {
+            font-size: .76rem;
+            color: var(--muted);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .login-field input {
+            background: rgba(15, 31, 61, .8);
+            border: 1px solid rgba(46, 204, 113, .15);
+            border-radius: 8px;
+            padding: .8rem 1rem;
+            color: var(--white);
+            font-family: 'DM Sans', sans-serif;
+            font-size: .9rem;
+            outline: none;
+            width: 100%;
+            transition: border-color .3s;
+        }
+
+        .login-field input:focus {
+            border-color: var(--green);
+        }
+
+        .login-btn {
+            background: var(--green);
+            color: var(--navy);
+            padding: .85rem 2rem;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: .9rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            transition: all .3s;
+            margin-top: .5rem;
+        }
+
+        .login-btn:hover {
+            background: var(--green2);
+        }
+
+        .login-err {
+            color: var(--red);
+            font-size: .82rem;
+            margin-top: .7rem;
+            display: none;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0)
+            }
+
+            20%,
+            60% {
+                transform: translateX(-8px)
+            }
+
+            40%,
+            80% {
+                transform: translateX(8px)
+            }
+        }
+
+        .shake {
+            animation: shake .4s ease;
+        }
+
+        /* LAYOUT */
+        #adminPanel {
+            display: none;
+            min-height: 100vh;
+        }
+
+        .admin-nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            padding: .8rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(10, 22, 40, .97);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid rgba(46, 204, 113, .15);
+        }
+
+        .admin-nav-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .admin-nav-left img {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 2px solid var(--green);
+            object-fit: cover;
+        }
+
+        .admin-nav-brand {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+        }
+
+        .admin-nav-tag {
+            background: rgba(201, 168, 76, .15);
+            border: 1px solid rgba(201, 168, 76, .3);
+            color: var(--gold);
+            font-size: .68rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: .2rem .7rem;
+            border-radius: 20px;
+        }
+
+        .admin-nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .admin-site-btn {
+            background: rgba(46, 204, 113, .1);
+            border: 1px solid rgba(46, 204, 113, .3);
+            color: var(--green);
+            padding: .4rem 1rem;
+            border-radius: 6px;
+            font-size: .78rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: all .3s;
+        }
+
+        .admin-site-btn:hover {
+            background: var(--green);
+            color: var(--navy);
+        }
+
+        .logout-btn {
+            background: none;
+            border: 1px solid rgba(231, 76, 60, .3);
+            color: var(--red);
+            padding: .4rem 1rem;
+            border-radius: 6px;
+            font-size: .78rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all .3s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(231, 76, 60, .1);
+        }
+
+        /* TABS */
+        .admin-tabs {
+            position: fixed;
+            top: 57px;
+            width: 100%;
+            z-index: 99;
+            background: rgba(10, 22, 40, .97);
+            border-bottom: 1px solid rgba(46, 204, 113, .1);
+            display: flex;
+            padding: 0 2rem;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            padding: .9rem 1.4rem;
+            background: none;
+            border: none;
+            color: var(--muted);
+            font-family: 'DM Sans', sans-serif;
+            font-size: .83rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all .3s;
+            white-space: nowrap;
+        }
+
+        .tab-btn:hover {
+            color: var(--white);
+        }
+
+        .tab-btn.active {
+            color: var(--green);
+            border-bottom-color: var(--green);
+        }
+
+        /* CONTENT */
+        .admin-content {
+            padding: 7rem 2rem 3rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .page-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2rem;
+            letter-spacing: 3px;
+        }
+
+        .page-title span {
+            color: var(--green);
+        }
+
+        .admin-card {
+            background: var(--card);
+            border: 1px solid rgba(46, 204, 113, .12);
+            border-radius: 12px;
+            padding: 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .admin-card-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.3rem;
+            letter-spacing: 2px;
+            margin-bottom: 1.2rem;
+        }
+
+        /* FORMS */
+        .a-field {
+            display: flex;
+            flex-direction: column;
+            gap: .4rem;
+            margin-bottom: 1rem;
+        }
+
+        .a-field label {
+            font-size: .76rem;
+            color: var(--muted);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .a-field input,
+        .a-field textarea,
+        .a-field select {
+            background: rgba(10, 22, 40, .8);
+            border: 1px solid rgba(46, 204, 113, .15);
+            border-radius: 8px;
+            padding: .75rem 1rem;
+            color: var(--white);
+            font-family: 'DM Sans', sans-serif;
+            font-size: .9rem;
+            outline: none;
+            width: 100%;
+            transition: border-color .3s;
+        }
+
+        .a-field input:focus,
+        .a-field textarea:focus,
+        .a-field select:focus {
+            border-color: var(--green);
+        }
+
+        .a-field textarea {
+            resize: vertical;
+            min-height: 90px;
+        }
+
+        .a-field select option {
+            background: #0f1f3d;
+        }
+
+        .form-row2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .a-toggle {
+            display: flex;
+            align-items: center;
+            gap: .8rem;
+            cursor: pointer;
+        }
+
+        .a-toggle input[type=checkbox] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--green);
+            cursor: pointer;
+        }
+
+        .a-toggle span {
+            font-size: .88rem;
+            color: var(--muted);
+        }
+
+        /* BUTTONS */
+        .btn-save {
+            background: var(--green);
+            color: var(--navy);
+            padding: .75rem 1.8rem;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: .85rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border: none;
+            cursor: pointer;
+            transition: all .3s;
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+        }
+
+        .btn-save:hover {
+            background: var(--green2);
+            transform: translateY(-2px);
+        }
+
+        .btn-save:disabled {
+            opacity: .5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-add {
+            background: rgba(46, 204, 113, .1);
+            border: 1px solid rgba(46, 204, 113, .3);
+            color: var(--green);
+            padding: .6rem 1.2rem;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: .82rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all .3s;
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+        }
+
+        .btn-add:hover {
+            background: var(--green);
+            color: var(--navy);
+        }
+
+        .btn-del {
+            background: none;
+            border: 1px solid rgba(231, 76, 60, .3);
+            color: var(--red);
+            padding: .4rem .8rem;
+            border-radius: 6px;
+            font-size: .78rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all .3s;
+        }
+
+        .btn-del:hover {
+            background: rgba(231, 76, 60, .15);
+        }
+
+        .btn-edit {
+            background: rgba(201, 168, 76, .1);
+            border: 1px solid rgba(201, 168, 76, .3);
+            color: var(--gold);
+            padding: .4rem .8rem;
+            border-radius: 6px;
+            font-size: .78rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all .3s;
+        }
+
+        .btn-edit:hover {
+            background: rgba(201, 168, 76, .2);
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(10, 22, 40, .3);
+            border-top-color: var(--navy);
+            border-radius: 50%;
+            animation: spin .7s linear infinite;
+            margin-left: .4rem;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        /* TOAST */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: var(--green);
+            color: var(--navy);
+            padding: .8rem 2rem;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: .88rem;
+            z-index: 9999;
+            transition: transform .35s cubic-bezier(.4, 0, .2, 1), opacity .35s;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .toast.error {
+            background: var(--red);
+            color: #fff;
+        }
+
+        /* PROMOS */
+        .promo-item {
+            background: rgba(10, 22, 40, .6);
+            border: 1px solid rgba(46, 204, 113, .1);
+            border-radius: 10px;
+            padding: 1.2rem 1.4rem;
+            margin-bottom: 1rem;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .promo-item-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            margin-bottom: .3rem;
+        }
+
+        .promo-item-meta {
+            font-size: .78rem;
+            color: var(--muted);
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .badge-active {
+            background: rgba(46, 204, 113, .12);
+            color: var(--green);
+            border: 1px solid rgba(46, 204, 113, .3);
+            padding: .15rem .6rem;
+            border-radius: 20px;
+            font-size: .68rem;
+            font-weight: 700;
+        }
+
+        .badge-inactive {
+            background: rgba(139, 163, 196, .08);
+            color: var(--muted);
+            border: 1px solid rgba(139, 163, 196, .2);
+            padding: .15rem .6rem;
+            border-radius: 20px;
+            font-size: .68rem;
+            font-weight: 700;
+        }
+
+        .badge-gold {
+            background: rgba(201, 168, 76, .12);
+            color: var(--gold);
+            border: 1px solid rgba(201, 168, 76, .3);
+            padding: .15rem .6rem;
+            border-radius: 20px;
+            font-size: .68rem;
+            font-weight: 700;
+        }
+
+        .promo-item-actions {
+            display: flex;
+            gap: .5rem;
+            flex-shrink: 0;
+        }
+
+        /* SERVICIOS */
+        .sv-row {
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(46, 204, 113, .07);
+        }
+
+        .sv-row:last-child {
+            border-bottom: none;
+        }
+
+        .sv-row-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: .5rem;
+        }
+
+        /* MENSAJES */
+        .msg-item {
+            background: rgba(10, 22, 40, .6);
+            border: 1px solid rgba(46, 204, 113, .1);
+            border-radius: 10px;
+            padding: 1.3rem 1.4rem;
+            margin-bottom: 1rem;
+        }
+
+        .msg-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: .7rem;
+            flex-wrap: wrap;
+            gap: .5rem;
+        }
+
+        .msg-name {
+            font-weight: 700;
+            font-size: .95rem;
+        }
+
+        .msg-date {
+            font-size: .75rem;
+            color: var(--muted);
+        }
+
+        .msg-meta {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            font-size: .8rem;
+            color: var(--muted);
+            margin-bottom: .6rem;
+        }
+
+        .msg-meta strong {
+            color: var(--white);
+        }
+
+        .msg-body {
+            font-size: .88rem;
+            color: var(--muted);
+            line-height: 1.65;
+            background: rgba(46, 204, 113, .04);
+            border-left: 2px solid rgba(46, 204, 113, .3);
+            padding: .6rem .9rem;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .msg-empty {
+            text-align: center;
+            color: var(--muted);
+            padding: 2.5rem;
+            font-size: .9rem;
+        }
+
+        /* PORTAFOLIO */
+        .port-filter {
+            background: rgba(46, 204, 113, .07);
+            border: 1px solid rgba(46, 204, 113, .2);
+            color: var(--muted);
+            padding: .4rem 1rem;
+            border-radius: 20px;
+            font-size: .78rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .3s;
+        }
+
+        .port-filter.active {
+            background: var(--green);
+            color: var(--navy);
+            border-color: var(--green);
+        }
+
+        .port-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 12px;
+            margin-bottom: 1.5rem;
+            min-height: 60px;
+        }
+
+        .port-thumb {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(46, 204, 113, .1);
+            background: rgba(10, 22, 40, .6);
+        }
+
+        .port-thumb.img-type {
+            aspect-ratio: 3/4;
+        }
+
+        .port-thumb.video-type {
+            aspect-ratio: 16/9;
+        }
+
+        .port-thumb.link-type {
+            aspect-ratio: 16/9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: .5rem;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .port-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform .3s;
+        }
+
+        .port-thumb video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .port-thumb:hover img {
+            transform: scale(1.04);
+        }
+
+        .port-thumb-del {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            background: rgba(231, 76, 60, .9);
+            border: none;
+            color: #fff;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: .85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity .2s;
+            z-index: 2;
+        }
+
+        .port-thumb:hover .port-thumb-del {
+            opacity: 1;
+        }
+
+        .port-thumb-badge {
+            position: absolute;
+            bottom: 6px;
+            left: 6px;
+            background: rgba(0, 0, 0, .75);
+            color: var(--white);
+            font-size: .62rem;
+            font-weight: 700;
+            padding: .2rem .5rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        .port-link-icon {
+            font-size: 2rem;
+        }
+
+        .port-link-name {
+            font-size: .78rem;
+            color: var(--muted);
+            word-break: break-all;
+        }
+
+        .port-link-tag {
+            font-size: .65rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: .15rem .5rem;
+            border-radius: 4px;
+        }
+
+        .tag-landing {
+            background: rgba(46, 204, 113, .15);
+            color: var(--green);
+        }
+
+        .tag-sitio {
+            background: rgba(201, 168, 76, .15);
+            color: var(--gold);
+        }
+
+        .port-upload-area {
+            border: 2px dashed rgba(46, 204, 113, .2);
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all .3s;
+            background: rgba(46, 204, 113, .02);
+        }
+
+        .port-upload-area:hover,
+        .port-upload-area.drag-over {
+            border-color: rgba(46, 204, 113, .6);
+            background: rgba(46, 204, 113, .06);
+        }
+
+        .port-upload-area svg {
+            width: 40px;
+            height: 40px;
+            color: var(--muted);
+            margin-bottom: .7rem;
+        }
+
+        .port-upload-label {
+            color: var(--muted);
+            font-size: .88rem;
+        }
+
+        .port-upload-label strong {
+            color: var(--green);
+        }
+
+        .upload-preview {
+            display: none;
+            margin-bottom: 1rem;
+        }
+
+        .upload-preview img,
+        .upload-preview video {
+            max-height: 180px;
+            border-radius: 8px;
+            border: 1px solid rgba(46, 204, 113, .2);
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--muted);
+            padding: 2.5rem;
+            font-size: .9rem;
+            grid-column: 1/-1;
+        }
+
+        /* MODAL */
+        .modal-bg {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .65);
+            z-index: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .3s;
+        }
+
+        .modal-bg.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal {
+            background: #0d1b2e;
+            border: 1px solid rgba(46, 204, 113, .25);
+            border-radius: 16px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 560px;
+            transform: scale(.95);
+            transition: transform .3s;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-bg.open .modal {
+            transform: scale(1);
+        }
+
+        .modal-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.5rem;
+            letter-spacing: 3px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--muted);
+            cursor: pointer;
+            font-size: 1.4rem;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            color: var(--white);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        @media(max-width:600px) {
+            .form-row2 {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-nav-tag {
+                display: none;
+            }
+
+            .sv-row-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- LOGIN -->
+    <div id="loginScreen">
+        <div class="login-box" id="loginBox">
+            <img src="Logo.png" alt="Logo" class="login-logo" onerror="this.style.display='none'">
+            <div class="login-brand">Ingeniería Creativa</div>
+            <div class="login-sub">Panel de Administración</div>
+            <div class="login-field">
+                <label>Contraseña</label>
+                <input type="password" id="loginPass" placeholder="••••••••"
+                    onkeydown="if(event.key==='Enter')doLogin()">
+            </div>
+            <button class="login-btn" onclick="doLogin()">Entrar</button>
+            <div class="login-err" id="loginErr">Contraseña incorrecta</div>
+        </div>
+    </div>
+
+    <!-- PANEL -->
+    <div id="adminPanel">
+        <nav class="admin-nav">
+            <div class="admin-nav-left">
+                <img src="Logo.png" alt="Logo" onerror="this.style.display='none'">
+                <span class="admin-nav-brand">Ingeniería Creativa</span>
+                <span class="admin-nav-tag">Admin</span>
+            </div>
+            <div class="admin-nav-right">
+                <a href="index.html" target="_blank" class="admin-site-btn">Ver sitio →</a>
+                <button class="logout-btn" onclick="doLogout()">Salir</button>
+            </div>
+        </nav>
+
+        <div class="admin-tabs">
+            <button class="tab-btn active" onclick="switchTab('promos')">🔥 Promociones</button>
+            <button class="tab-btn" onclick="switchTab('servicios')">⚙️ Servicios</button>
+            <button class="tab-btn" onclick="switchTab('mensajes')">💬 Mensajes</button>
+            <button class="tab-btn" onclick="switchTab('portafolio')">🖼️ Portafolio</button>
+        </div>
+
+        <div class="admin-content">
+
+            <!-- PROMOCIONES -->
+            <div class="tab-panel active" id="tab-promos">
+                <div class="section-header">
+                    <div class="page-title">Gestión de <span>Promociones</span></div>
+                    <button class="btn-add" onclick="openPromoModal()">+ Nueva promo</button>
+                </div>
+                <div id="promoAdminList">
+                    <div class="msg-empty">Cargando...</div>
+                </div>
+            </div>
+
+            <!-- SERVICIOS -->
+            <div class="tab-panel" id="tab-servicios">
+                <div class="section-header">
+                    <div class="page-title">Textos de <span>Servicios</span></div>
+                    <button class="btn-save" id="btnSaveServicios" onclick="saveServicios()">💾 Guardar cambios</button>
+                </div>
+                <div class="admin-card" id="serviciosForm">
+                    <div class="msg-empty">Cargando...</div>
+                </div>
+            </div>
+
+            <!-- MENSAJES -->
+            <div class="tab-panel" id="tab-mensajes">
+                <div class="section-header">
+                    <div class="page-title"><span>Mensajes</span> recibidos</div>
+                    <button class="btn-del" onclick="if(confirm('¿Borrar todos?'))clearMensajes()">Limpiar todo</button>
+                </div>
+                <div id="mensajesList">
+                    <div class="msg-empty">Cargando...</div>
+                </div>
+            </div>
+
+            <!-- PORTAFOLIO -->
+            <div class="tab-panel" id="tab-portafolio">
+                <div class="section-header">
+                    <div class="page-title">Portafolio <span>Multimedia</span></div>
+                    <button class="btn-add" onclick="openPortModal()">+ Landing / Sitio Web</button>
+                </div>
+                <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1.5rem;">
+                    <button class="port-filter active" onclick="filterPort('todos')">Todos</button>
+                    <button class="port-filter" onclick="filterPort('imagen')">🖼️ Imágenes</button>
+                    <button class="port-filter" onclick="filterPort('video')">🎬 Videos</button>
+                    <button class="port-filter" onclick="filterPort('landing')">🌐 Landings</button>
+                    <button class="port-filter" onclick="filterPort('sitio')">💻 Sitios Web</button>
+                </div>
+                <div class="port-grid" id="portGrid">
+                    <div class="empty-state">Cargando...</div>
+                </div>
+
+                <div class="admin-card">
+                    <div class="admin-card-title">📤 Subir imagen o video</div>
+                    <div class="upload-preview" id="uploadPreview">
+                        <img id="previewImg" src="" alt="" style="display:none">
+                        <video id="previewVid" src="" controls style="display:none"></video>
+                    </div>
+                    <div class="a-field">
+                        <label>Nombre / descripción</label>
+                        <input type="text" id="portLabel" placeholder="Ej: Flyer para restaurante La Paloma">
+                    </div>
+                    <div class="port-upload-area" id="dropZone"
+                        onclick="document.getElementById('portFileInput').click()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <polyline points="16 16 12 12 8 16" />
+                            <line x1="12" y1="12" x2="12" y2="21" />
+                            <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3" />
+                        </svg>
+                        <div class="port-upload-label" id="uploadLabel">Haz clic o arrastra aquí — <strong>imágenes o
+                                videos</strong></div>
+                        <div style="font-size:.75rem;color:var(--muted);margin-top:.4rem;">JPG, PNG, GIF, MP4, MOV — máx
+                            900KB</div>
+                    </div>
+                    <input type="file" id="portFileInput" accept="image/*,video/*" style="display:none"
+                        onchange="handlePortFile(this)">
+                    <button class="btn-save" id="btnUploadPort" onclick="uploadPortItem()"
+                        style="margin-top:1rem;width:100%;justify-content:center;" disabled>Subir a portafolio</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- MODAL PROMO -->
+    <div class="modal-bg" id="promoModal">
+        <div class="modal">
+            <div class="modal-title">
+                <span id="modalPromoTitle">Nueva Promoción</span>
+                <button class="modal-close" onclick="closePromoModal()">✕</button>
+            </div>
+            <input type="hidden" id="editPromoId">
+            <div class="form-row2">
+                <div class="a-field"><label>Título principal</label><input type="text" id="pm_title"
+                        placeholder="Ej: 25% DE DESCUENTO"></div>
+                <div class="a-field"><label>Subtítulo (en verde/dorado)</label><input type="text" id="pm_span"
+                        placeholder="Ej: EN TU PRIMER PROYECTO"></div>
+            </div>
+            <div class="a-field"><label>Etiqueta / badge</label><input type="text" id="pm_label"
+                    placeholder="🔥 Oferta de lanzamiento"></div>
+            <div class="a-field"><label>Descripción</label><textarea id="pm_desc"
+                    placeholder="Descripción de la promo..."></textarea></div>
+            <div class="form-row2">
+                <div class="a-field"><label>Texto del botón</label><input type="text" id="pm_cta"
+                        placeholder="Cotizar ahora"></div>
+                <div class="a-field"><label>Enlace del botón</label><input type="text" id="pm_ctaHref"
+                        placeholder="#contacto"></div>
+            </div>
+            <div class="a-field"><label>Fecha límite (countdown)</label><input type="datetime-local" id="pm_deadline">
+            </div>
+            <div style="display:flex;gap:1.5rem;flex-wrap:wrap;margin-top:.5rem;">
+                <label class="a-toggle"><input type="checkbox" id="pm_gold"><span>Acento dorado</span></label>
+                <label class="a-toggle"><input type="checkbox" id="pm_active" checked><span>Visible en el
+                        sitio</span></label>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-del" onclick="closePromoModal()">Cancelar</button>
+                <button class="btn-save" id="btnSavePromo" onclick="savePromo()">✅ Guardar promo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PORTAFOLIO LINKS -->
+    <div class="modal-bg" id="portModal">
+        <div class="modal">
+            <div class="modal-title">
+                <span>Agregar Landing / Sitio Web</span>
+                <button class="modal-close" onclick="closePortModal()">✕</button>
+            </div>
+            <div class="a-field"><label>Tipo</label>
+                <select id="pt_tipo">
+                    <option value="landing">🌐 Landing Page</option>
+                    <option value="sitio">💻 Sitio Web</option>
+                </select>
+            </div>
+            <div class="a-field"><label>Nombre del proyecto</label><input type="text" id="pt_nombre"
+                    placeholder="Ej: Boutique Magy Rivera"></div>
+            <div class="a-field"><label>URL del sitio</label><input type="url" id="pt_url" placeholder="https://...">
+            </div>
+            <div class="a-field"><label>Descripción corta</label><input type="text" id="pt_desc"
+                    placeholder="Ej: Tienda de moda femenina en Cosoleacaque"></div>
+            <div class="modal-actions">
+                <button class="btn-del" onclick="closePortModal()">Cancelar</button>
+                <button class="btn-save" id="btnSavePort" onclick="savePortLink()">✅ Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, setDoc }
+            from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        const ADMIN_PASS = 'ingcreativa2025'; // ← cambia aquí tu contraseña
+
+        const app = initializeApp({
+            apiKey: "AIzaSyCnzacAcLtQlyV9nimWqKeV48A5bXKGvhE",
+            authDomain: "ingenieria-creativa.firebaseapp.com",
+            projectId: "ingenieria-creativa",
+            storageBucket: "ingenieria-creativa.firebasestorage.app",
+            messagingSenderId: "293634725655",
+            appId: "1:293634725655:web:f0b4a9e8d7b7cc6f0a8952"
+        });
+        const db = getFirestore(app);
+
+        // TOAST
+        function showToast(msg, isError = false) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.className = 'toast show' + (isError ? ' error' : '');
+            setTimeout(() => t.className = 'toast', 3000);
+        }
+        window.showToast = showToast;
+
+        // LOGIN
+        window.doLogin = () => {
+            if (document.getElementById('loginPass').value === ADMIN_PASS) {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+                loadAll();
+            } else {
+                const box = document.getElementById('loginBox');
+                document.getElementById('loginErr').style.display = 'block';
+                box.classList.remove('shake'); void box.offsetWidth; box.classList.add('shake');
+            }
+        };
+        window.doLogout = () => {
+            document.getElementById('adminPanel').style.display = 'none';
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('loginPass').value = '';
+        };
+
+        // TABS
+        window.switchTab = name => {
+            document.querySelectorAll('.tab-btn').forEach((b, i) =>
+                b.classList.toggle('active', ['promos', 'servicios', 'mensajes', 'portafolio'][i] === name));
+            document.querySelectorAll('.tab-panel').forEach(p =>
+                p.classList.toggle('active', p.id === 'tab-' + name));
+        };
+
+        function loadAll() { loadPromos(); loadServicios(); loadMensajes(); loadPortfolio(); }
+
+        // ════════════ PROMOCIONES ════════════
+        window.openPromoModal = (id = '') => {
+            document.getElementById('editPromoId').value = id;
+            if (id) {
+                const p = window._promos?.find(x => x.id === id); if (!p) return;
+                document.getElementById('modalPromoTitle').textContent = 'Editar Promoción';
+                document.getElementById('pm_title').value = p.title || '';
+                document.getElementById('pm_span').value = p.titleSpan || '';
+                document.getElementById('pm_label').value = p.label || '';
+                document.getElementById('pm_desc').value = p.desc || '';
+                document.getElementById('pm_cta').value = p.cta || 'Cotizar ahora';
+                document.getElementById('pm_ctaHref').value = p.ctaHref || '#contacto';
+                document.getElementById('pm_deadline').value = new Date(p.deadline).toISOString().slice(0, 16);
+                document.getElementById('pm_gold').checked = p.gold || false;
+                document.getElementById('pm_active').checked = p.active !== false;
+            } else {
+                document.getElementById('modalPromoTitle').textContent = 'Nueva Promoción';
+                ['pm_title', 'pm_span', 'pm_desc'].forEach(id => document.getElementById(id).value = '');
+                document.getElementById('pm_label').value = '🔥 Oferta especial';
+                document.getElementById('pm_cta').value = 'Cotizar ahora';
+                document.getElementById('pm_ctaHref').value = '#contacto';
+                document.getElementById('pm_deadline').value = new Date(Date.now() + 7 * 24 * 3600 * 1000).toISOString().slice(0, 16);
+                document.getElementById('pm_gold').checked = false;
+                document.getElementById('pm_active').checked = true;
+            }
+            document.getElementById('promoModal').classList.add('open');
+        };
+        window.closePromoModal = () => document.getElementById('promoModal').classList.remove('open');
+        document.getElementById('promoModal').addEventListener('click', e => { if (e.target === document.getElementById('promoModal')) window.closePromoModal(); });
+
+        window.savePromo = async () => {
+            const id = document.getElementById('editPromoId').value;
+            const btn = document.getElementById('btnSavePromo');
+            btn.disabled = true; btn.innerHTML = 'Guardando...<span class="spinner"></span>';
+            const data = {
+                title: document.getElementById('pm_title').value.trim() || 'NUEVA PROMO',
+                titleSpan: document.getElementById('pm_span').value.trim() || '',
+                label: document.getElementById('pm_label').value.trim() || '🔥 Promo',
+                desc: document.getElementById('pm_desc').value.trim() || '',
+                cta: document.getElementById('pm_cta').value.trim() || 'Ver más',
+                ctaHref: document.getElementById('pm_ctaHref').value.trim() || '#contacto',
+                deadline: new Date(document.getElementById('pm_deadline').value).toISOString(),
+                gold: document.getElementById('pm_gold').checked,
+                active: document.getElementById('pm_active').checked,
+                fecha: Date.now()
+            };
+            try {
+                if (id) await setDoc(doc(db, 'promos', id), data, { merge: true });
+                else await addDoc(collection(db, 'promos'), data);
+                showToast('✅ Promoción guardada'); window.closePromoModal(); loadPromos();
+            } catch (e) { showToast('Error: ' + e.message, true); }
+            btn.disabled = false; btn.innerHTML = '✅ Guardar promo';
+        };
+
+        async function loadPromos() {
+            const list = document.getElementById('promoAdminList');
+            try {
+                const snap = await getDocs(collection(db, 'promos'));
+                window._promos = [];
+                snap.forEach(d => window._promos.push({ id: d.id, ...d.data() }));
+                window._promos.sort((a, b) => b.fecha - a.fecha);
+                if (!window._promos.length) { list.innerHTML = '<div class="msg-empty">No hay promociones. Crea una arriba.</div>'; return; }
+                list.innerHTML = window._promos.map(p => {
+                    const dl = new Date(p.deadline).toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: 'numeric' });
+                    return `<div class="promo-item">
+        <div>
+          <div class="promo-item-title">${p.title} ${p.titleSpan}</div>
+          <div class="promo-item-meta">
+            <span>${p.label}</span><span>Vence: ${dl}</span>
+            ${p.active ? '<span class="badge-active">Activa</span>' : '<span class="badge-inactive">Oculta</span>'}
+            ${p.gold ? '<span class="badge-gold">Dorado</span>' : ''}
+          </div>
+        </div>
+        <div class="promo-item-actions">
+          <button class="btn-edit" onclick="openPromoModal('${p.id}')">Editar</button>
+          <button class="btn-del"  onclick="deletePromo('${p.id}')">Borrar</button>
+        </div>
+      </div>`;
+                }).join('');
+            } catch (e) { list.innerHTML = '<div class="msg-empty">Error: ' + e.message + '</div>'; }
+        }
+        window.deletePromo = async id => {
+            if (!confirm('¿Borrar esta promoción?')) return;
+            await deleteDoc(doc(db, 'promos', id));
+            showToast('🗑️ Eliminada'); loadPromos();
+        };
+
+        // ════════════ SERVICIOS ════════════
+        const DEFAULT_SV = [
+            { id: 'sv1', name: 'Flyers & Diseño Visual', price: 'Desde $350 MXN', desc: 'Diseño de flyers, banners y material visual que comunica tu marca.' },
+            { id: 'sv2', name: 'Producción de Video', price: 'Desde $800 MXN', desc: 'Producción y edición de videos para redes y publicidad.' },
+            { id: 'sv3', name: 'Landing Pages', price: 'Desde $1,200 MXN', desc: 'Páginas optimizadas para convertir visitantes en clientes.' },
+            { id: 'sv4', name: 'Páginas Web', price: 'Desde $2,500 MXN', desc: 'Sitios completos y responsivos para tu negocio.' }
+        ];
+        async function loadServicios() {
+            const form = document.getElementById('serviciosForm');
+            try {
+                const snap = await getDocs(collection(db, 'servicios'));
+                let svs = [];
+                snap.forEach(d => svs.push({ id: d.id, ...d.data() }));
+                if (!svs.length) svs = DEFAULT_SV;
+                svs.sort((a, b) => (a.orden || 0) - (b.orden || 0));
+                window._servicios = svs;
+                form.innerHTML = svs.map(sv => `
+      <div class="sv-row">
+        <div class="sv-row-grid">
+          <div class="a-field" style="margin:0"><label>Servicio</label><input type="text" value="${sv.name}" data-svid="${sv.id}" data-field="name"></div>
+          <div class="a-field" style="margin:0"><label>Precio desde</label><input type="text" value="${sv.price || ''}" data-svid="${sv.id}" data-field="price" style="color:var(--green)"></div>
+        </div>
+        <div class="a-field" style="margin:.5rem 0 0"><label>Descripción</label><input type="text" value="${sv.desc || ''}" data-svid="${sv.id}" data-field="desc"></div>
+      </div>`).join('');
+            } catch (e) { form.innerHTML = '<div class="msg-empty">Error: ' + e.message + '</div>'; }
+        }
+        window.saveServicios = async () => {
+            const btn = document.getElementById('btnSaveServicios');
+            btn.disabled = true; btn.innerHTML = 'Guardando...<span class="spinner"></span>';
+            try {
+                const svs = window._servicios || DEFAULT_SV;
+                document.querySelectorAll('[data-svid]').forEach(el => {
+                    const sv = svs.find(s => s.id === el.getAttribute('data-svid'));
+                    if (sv) sv[el.getAttribute('data-field')] = el.value.trim();
+                });
+                await Promise.all(svs.map(sv => setDoc(doc(db, 'servicios', sv.id), sv)));
+                showToast('✅ Servicios actualizados');
+            } catch (e) { showToast('Error: ' + e.message, true); }
+            btn.disabled = false; btn.innerHTML = '💾 Guardar cambios';
+        };
+
+        // ════════════ MENSAJES ════════════
+        async function loadMensajes() {
+            const list = document.getElementById('mensajesList');
+            try {
+                const snap = await getDocs(collection(db, 'mensajes'));
+                let msgs = [];
+                snap.forEach(d => msgs.push({ id: d.id, ...d.data() }));
+                msgs.sort((a, b) => b.fecha - a.fecha);
+                if (!msgs.length) { list.innerHTML = '<div class="msg-empty">📭 Aún no hay mensajes.</div>'; return; }
+                list.innerHTML = msgs.map(m => `
+      <div class="msg-item">
+        <div class="msg-header"><span class="msg-name">👤 ${m.nombre}</span><span class="msg-date">${new Date(m.fecha).toLocaleString('es-MX')}</span></div>
+        <div class="msg-meta">
+          <span>📧 <strong>${m.email || '—'}</strong></span>
+          <span>📱 <strong>${m.telefono || '—'}</strong></span>
+          <span>🛠️ <strong>${m.servicio || '—'}</strong></span>
+        </div>
+        <div class="msg-body">${m.mensaje || 'Sin mensaje'}</div>
+      </div>`).join('');
+            } catch (e) { list.innerHTML = '<div class="msg-empty">Error: ' + e.message + '</div>'; }
+        }
+        window.clearMensajes = async () => {
+            const snap = await getDocs(collection(db, 'mensajes'));
+            await Promise.all(snap.docs.map(d => deleteDoc(doc(db, 'mensajes', d.id))));
+            showToast('🗑️ Mensajes eliminados'); loadMensajes();
+        };
+
+        // ════════════ PORTAFOLIO ════════════
+        let portFilter = 'todos';
+        window._portItems = [];
+
+        window.filterPort = tipo => {
+            portFilter = tipo;
+            document.querySelectorAll('.port-filter').forEach(b =>
+                b.classList.toggle('active', b.textContent.toLowerCase().includes(tipo === 'todos' ? 'todos' : tipo)));
+            renderPortfolio();
+        };
+
+        async function loadPortfolio() {
+            try {
+                const snap = await getDocs(collection(db, 'portafolio'));
+                window._portItems = [];
+                snap.forEach(d => window._portItems.push({ id: d.id, ...d.data() }));
+                window._portItems.sort((a, b) => b.fecha - a.fecha);
+                renderPortfolio();
+            } catch (e) { document.getElementById('portGrid').innerHTML = '<div class="empty-state">Error: ' + e.message + '</div>'; }
+        }
+
+        function renderPortfolio() {
+            const grid = document.getElementById('portGrid');
+            let items = portFilter === 'todos' ? window._portItems : window._portItems.filter(i => i.tipo === portFilter);
+            if (!items.length) { grid.innerHTML = '<div class="empty-state">No hay items en esta categoría.</div>'; return; }
+            grid.innerHTML = items.map(item => {
+                if (item.tipo === 'imagen') return `
+      <div class="port-thumb img-type">
+        <img src="${item.url}" alt="${item.nombre || ''}" loading="lazy">
+        <span class="port-thumb-badge">IMG</span>
+        <button class="port-thumb-del" onclick="deletePortItem('${item.id}')">✕</button>
+      </div>`;
+                if (item.tipo === 'video') return `
+      <div class="port-thumb video-type">
+        <video src="${item.url}" muted loop onmouseenter="this.play()" onmouseleave="this.pause()"></video>
+        <span class="port-thumb-badge">VIDEO</span>
+        <button class="port-thumb-del" onclick="deletePortItem('${item.id}')">✕</button>
+      </div>`;
+                const icon = item.tipo === 'landing' ? '🌐' : '💻';
+                const tc = item.tipo === 'landing' ? 'tag-landing' : 'tag-sitio';
+                const tl = item.tipo === 'landing' ? 'Landing Page' : 'Sitio Web';
+                return `
+      <div class="port-thumb link-type" onclick="window.open('${item.url}','_blank')">
+        <div class="port-link-icon">${icon}</div>
+        <div class="port-link-name">${item.nombre}</div>
+        <span class="port-link-tag ${tc}">${tl}</span>
+        <button class="port-thumb-del" onclick="event.stopPropagation();deletePortItem('${item.id}')">✕</button>
+      </div>`;
+            }).join('');
+        }
+        window.deletePortItem = async id => {
+            if (!confirm('¿Eliminar este item?')) return;
+            await deleteDoc(doc(db, 'portafolio', id));
+            showToast('🗑️ Eliminado'); loadPortfolio();
+        };
+
+        // Upload base64 → Firestore (igual que el doctor)
+        let selectedPortFile = null;
+        window.handlePortFile = input => {
+            const file = input.files[0]; if (!file) return;
+            if (file.size > 900 * 1024) { showToast('Máximo 900KB por archivo', true); input.value = ''; return; }
+            selectedPortFile = file;
+            const isVideo = file.type.startsWith('video/');
+            const reader = new FileReader();
+            reader.onload = e => {
+                document.getElementById('previewImg').style.display = isVideo ? 'none' : 'block';
+                document.getElementById('previewVid').style.display = isVideo ? 'block' : 'none';
+                if (isVideo) document.getElementById('previewVid').src = e.target.result;
+                else document.getElementById('previewImg').src = e.target.result;
+                document.getElementById('uploadPreview').style.display = 'block';
+                document.getElementById('uploadLabel').innerHTML = `<strong>${file.name}</strong> lista para subir`;
+                document.getElementById('btnUploadPort').disabled = false;
+            };
+            reader.readAsDataURL(file);
+        };
+
+        window.uploadPortItem = async () => {
+            if (!selectedPortFile) return;
+            const btn = document.getElementById('btnUploadPort');
+            btn.disabled = true; btn.innerHTML = 'Subiendo...<span class="spinner"></span>';
+            const label = document.getElementById('portLabel').value.trim() || selectedPortFile.name;
+            const isVideo = selectedPortFile.type.startsWith('video/');
+            const reader = new FileReader();
+            reader.onload = async e => {
+                try {
+                    await addDoc(collection(db, 'portafolio'), {
+                        tipo: isVideo ? 'video' : 'imagen',
+                        url: e.target.result,
+                        nombre: label,
+                        fecha: Date.now()
+                    });
+                    showToast('✅ Subido al portafolio');
+                    selectedPortFile = null;
+                    document.getElementById('portFileInput').value = '';
+                    document.getElementById('portLabel').value = '';
+                    document.getElementById('uploadPreview').style.display = 'none';
+                    document.getElementById('uploadLabel').innerHTML = 'Haz clic o arrastra aquí — <strong>imágenes o videos</strong>';
+                    btn.innerHTML = 'Subir a portafolio';
+                    loadPortfolio();
+                } catch (err) { showToast('Error: ' + err.message, true); btn.disabled = false; btn.innerHTML = 'Subir a portafolio'; }
+            };
+            reader.readAsDataURL(selectedPortFile);
+        };
+
+        // Drag & drop
+        const dz = document.getElementById('dropZone');
+        dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
+        dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+        dz.addEventListener('drop', e => {
+            e.preventDefault(); dz.classList.remove('drag-over');
+            if (e.dataTransfer.files[0]) {
+                const fi = document.getElementById('portFileInput');
+                Object.defineProperty(fi, 'files', { value: e.dataTransfer.files, writable: true });
+                window.handlePortFile(fi);
+            }
+        });
+
+        // Modal links
+        window.openPortModal = () => document.getElementById('portModal').classList.add('open');
+        window.closePortModal = () => document.getElementById('portModal').classList.remove('open');
+        document.getElementById('portModal').addEventListener('click', e => { if (e.target === document.getElementById('portModal')) window.closePortModal(); });
+
+        window.savePortLink = async () => {
+            const tipo = document.getElementById('pt_tipo').value;
+            const nombre = document.getElementById('pt_nombre').value.trim();
+            const url = document.getElementById('pt_url').value.trim();
+            const desc = document.getElementById('pt_desc').value.trim();
+            if (!nombre || !url) { showToast('Nombre y URL son obligatorios', true); return; }
+            const btn = document.getElementById('btnSavePort');
+            btn.disabled = true; btn.innerHTML = 'Guardando...<span class="spinner"></span>';
+            try {
+                await addDoc(collection(db, 'portafolio'), { tipo, nombre, url, desc, fecha: Date.now() });
+                showToast('✅ ' + (tipo === 'landing' ? 'Landing Page' : 'Sitio Web') + ' agregado');
+                window.closePortModal();
+                ['pt_nombre', 'pt_url', 'pt_desc'].forEach(id => document.getElementById(id).value = '');
+                loadPortfolio();
+            } catch (e) { showToast('Error: ' + e.message, true); }
+            btn.disabled = false; btn.innerHTML = '✅ Guardar';
+        };
+    </script>
+</body>
+
+</html>
